@@ -1,0 +1,83 @@
+@model stacsnet.Models.QAPost
+<div class="row container">
+    <div class='col-sm-8'>
+        @if (TempData["ErrMsg"] != null) {
+            <h5 class='alert @TempData["Css"]' style="float:right;" role='alert'>
+                @TempData["ErrMsg"]
+            </h5>
+        }
+        else if (!Model.date.Equals(DateTime.MinValue)) {
+            <a asp-controller="QA" asp-action="Index">
+                <button class="btn btn-outline-secondary" style="margin-top:13px;float:right">
+                    <h5><i class="fa fa-xl fa-arrow-left"></i>Back to all posts</h5>
+                </button>
+            </a>
+        }
+        <h1 class="text-uppercase">Stacsnet</h1>
+        <h3> @ViewBag.Subtitle</h3>
+        @if (!string.IsNullOrEmpty(Model.title)) {
+            <span><em><small>@Model.title</small></em></span>
+        }
+        @if (!string.IsNullOrEmpty(Model.uname)) {
+            <span><em><small style="float:right">
+                @Model.uname
+            </small></em></span>
+            <br>
+        }
+        @if (!string.IsNullOrEmpty(Model.text)) {
+            <h5 style="border-bottom: 1px solid #D3D3D3;padding: 5px;max-height: 150px;overflow-y:auto;">
+                @Model.text
+            </h5>
+        }
+        @if (!Model.date.Equals(DateTime.MinValue)) {
+            <br>
+                <span><em><small>@Model.date</small></em></span>
+            <br>
+        }
+        @if (!string.IsNullOrEmpty(Model.tags)) {
+            var tagarr = Model.tags.Split(",");
+            var taglist = tagarr.ToList();
+            if(taglist.Count() > 15){
+                taglist = taglist.Take(14).ToList();
+            }
+            foreach (var tag in taglist)
+               {
+                   <div class="btn-tag">
+                        <i class="fa fa-lg fa-hashtag"></i>
+                        @tag
+                   </div>
+               } 
+        }
+        <br>
+        <h3 id='commentbtn'
+            class='reply-btn btn btn-lg btn-primary'>
+            @ViewBag.ButtonText
+         </h3>
+    </div>
+    <div id='searchbox' class='col-sm-4'>
+        @Html.Label("unamein","Username")
+        @Html.TextBox("unamein", null, new { @class = "form-control input-uname",
+                                        @id = "search_uname_in" })
+        @Html.Label("tt","Title/Text")
+        @Html.TextBox("tt", null, new { @class = "form-control",
+                                        @id = "search_tt_in" })
+        @Html.Label("tagsin","Tags (e.g 'java,oop,tree')")
+        @Html.TextBox("tagsin", null, new { @class = "form-control",
+                                        @id = "search_tags_in" }) 
+        <div id='datebox'> 
+            <p>
+                Date Ascending:&nbsp;&nbsp;@Html.RadioButton("Date","ascending",true)
+            </p>
+            <p>
+                Date Descending:&nbsp;&nbsp;@Html.RadioButton("Date","descending")
+            </p>
+        </div>
+        <button id='searchbtn' class="btn btn-primary">Filter</button> 
+    </div>
+</div>
+</div>
+<hr>
+<div class="row" id="commentform" title='Post a comment' >
+    @{ Model.text = ""; }
+@{ await Html.RenderPartialAsync("_QAPost", @Model); }
+</div>

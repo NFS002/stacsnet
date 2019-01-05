@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stacsnet - @ViewBag.Title</title>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        @RenderSection("Styles", false)
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="icon" href="~/favicon/favicon.ico" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </environment>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Stacsnet</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-controller="Modules" asp-action="All_years">Modules</a></li>
+                    <li><a asp-controller="QA" asp-action="Index">Q & A</a></li>
+                    @{ 
+                        var year = Static.givenYears.FirstOrDefault();
+                        var module = Static.givenModules.FirstOrDefault();
+                    }
+                    @if(year != null && module != null) {
+                        <li><a asp-controller="Report" asp-action="Index" asp-route-module_code="@module" asp-route-year="@year">
+                            Grade averages
+                        </a></li>
+                    }
+                    <li><a href="https://github.com/NFS002/stacsnet/wiki">Wiki</a></li>
+                    <li><a id='privacylink'>Your privacy</a></li>
+                    <li><a href='https://github.com/NFS002/stacsnet/issues'>Bugs & feature requests</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        <noscript>
+            <br>
+            <p class="alert alert-danger">Please enable javascript to access stacsnet.</p>
+            <style type="text/css">
+            .page-wrapper { display: none}
+            </style>
+        </noscript>
+        <div class="page-wrapper">
+            @RenderBody()
+        </div>
+        <div id="privacydialog" title="Our approach to your privacy">
+            <p>
+                Stacsnet is designed to preserve the anonyimity of the users of stacnet.
+                Various features are in place to ensure that the identity of stacsnet users 
+                cannot be linked to their university account, whilst https helps to ensure 
+                that any sensitive data cannot be intercepted whilst in transmission. 
+            </p>
+        </div>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="~/js/home/yourprivacy.js"></script>
+        @RenderSection("Scripts", false)
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="~/js/home/yourprivacy.js"></script>
+        @RenderSection("Scripts", false)
+    </environment>
+</body>
+</html>

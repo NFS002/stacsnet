@@ -1,0 +1,48 @@
+﻿@model System.IO.DirectoryInfo
+@{ await Html.RenderPartialAsync("_TitleSection"); }
+<div class=container>
+    @{ 
+        var i = @Model.GetDirectories().Length;
+        string msg = "";
+        if (i == 1) {
+            msg = i + " entry was found"; 
+        }
+        else {
+            msg = i + " entries were found"; 
+        }
+    }
+    <p> @msg </p>
+    <br>
+    @foreach (var subdir in Model.EnumerateDirectories())
+    {
+       <a
+       asp-controller="Modules"
+       asp-action="All_files"
+       asp-route-module_code="@Model.Name"
+       asp-route-year="@Model.Parent.Name"
+       asp-route-folder="@subdir.Name"
+       class="subdir"> @subdir.Name
+       </a>
+    }
+    <br>
+    <br>
+    <h5>
+        @Html.ActionLink(
+            "Ask a question or browse previous answers",             // linkText
+            "Index",                                                 // actionName
+            "QA"                                                       // controllerName 
+            )                                                                                                   
+    </h5>
+    <h5>
+        @Html.ActionLink(
+            "Submit your own grade and view class averages",      // linkText
+            "Index",                                                 // actionName
+            "Report",                                                // controllerName
+            new {                                                   // routeValues
+                module_code = @Model.Name,
+                year = @Model.Parent.Name
+            },
+            null)                                         
+    </h5>    
+</div>
+@{ await Html.RenderPartialAsync("_Footer"); }

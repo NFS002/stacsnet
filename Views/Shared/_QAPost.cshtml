@@ -1,0 +1,53 @@
+@model stacsnet.Models.QAPost 
+@{
+    var placeholder = @Model.tags;
+    @Model.tags = "";
+}
+@using (Html.BeginForm("Comment","QA", FormMethod.Post, new { enctype = "multipart/form-data",
+                                                                onsubmit="return bindtags()"}))
+{
+@Html.AntiForgeryToken()
+    var date = DateTime.Now;
+    var datestr = date.ToString("g");
+    var message = "";
+    if (!string.IsNullOrEmpty(Model.uname)) {
+        message = "@" + Model.uname;
+        Model.uname = "";
+    }
+<div id='date'>
+    @datestr
+        <div id='replybox'>
+        @message
+    </div>
+</div>
+@Html.HiddenFor(m => m.pid, new { @id = "pidin" })
+@Html.LabelFor(m => m.title, new {style="color:#900" })
+@Html.TextBoxFor(m => m.title, new { @class = "form-control",
+                                @id = "titlein",
+                                value = "@Model.title"}) 
+<br>
+@Html.LabelFor(m => m.uname)
+@Html.TextBoxFor(m => m.uname, new { @class = "form-control input-uname",
+                                    @id = "unamein",
+                                    placeholder="anon"}) 
+<br>
+@Html.LabelFor(m => m.tags)
+<span id='tagserr' style="color:#911;float:right;font-weight:700"></span>
+@Html.TextBoxFor(m => m.tags, new { type="hidden",
+                                    @id="realtagsin" })
+<input class="form-control" placeholder="@placeholder" id="tagsin">
+
+<br>
+<div id='tags-display-box'>
+
+</div>
+@Html.LabelFor(m => m.text, new { style="color:#900" })
+@Html.TextAreaFor(m => m.text, new { @class = "form-control",
+                                rows="10",
+                                @id="textarea" })
+
+@Html.Hidden("return_url", @Context.Request.GetDisplayUrl())
+
+<br/>
+<input id='submitbtn' class='disabled btn btn-primary' type='submit'/>
+}

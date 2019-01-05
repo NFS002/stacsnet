@@ -1,0 +1,14 @@
+<div id='searchbox' class="col-sm-4">
+    @Html.TextBox("tagsin", null, new { @class = "form-control",
+                            placeholder="Search...",
+                            @id = "filesearch_in" }) 
+    <div id='datebox'>
+        <p>
+            Ascending:&nbsp;&nbsp;@Html.RadioButton("date_in","asc",true)
+        </p>
+        <p>
+            Descending:&nbsp;&nbsp;@Html.RadioButton("date_in","dsc")
+        </p>
+        </div>
+    <button id='filesearch_btn' class="btn btn-primary">Filter</button> 
+</div>

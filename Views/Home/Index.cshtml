@@ -1,0 +1,47 @@
+﻿@model Account
+
+@{ await Html.RenderPartialAsync("_TitleSection"); }
+@section Scripts {
+    <script src="@Url.Content("~/js/home/register.js")"></script>
+	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+<div class=container>
+    <div id='content'>
+        <h5>
+            An extension of the St. Andrews intranet
+            <a href='https://studres.cs.st-andrews.ac.uk/'>(studres)</a>
+            with some useful extra features:
+        </h5>
+        <ul>
+            <li>
+                View module content for previous years as well as the current year
+            </li>
+            <li>
+                Post your own grade (encrypted and anonymous) and see class averages,
+                variation, marking trends, and grade boundaries over the years
+            </li>
+            <li>
+                Upload your own files (diagrams, lecture notes, exam scripts) in addition to those provided
+                by the university (which are copied from studres automatically)
+            </li>
+            <li>
+                Ask questions on a particular module or topic (anonymously or with a username), 
+                browse other conversation threads,
+                or reply to others posts with your own answers
+            </li>
+        </ul>
+        <br>
+        <h5>Register for an account below, and then get started by @Html.ActionLink("browsing available modules","All_years","Modules") </h5>
+        <hr>
+        @{ await Html.RenderPartialAsync("_RegisterForm"); }
+        <br>
+        <div class="alert-wrapper">
+            <div role="alert" class="alert @ViewBag.Css">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.RegisterMsg
+            </div>
+        </div>
+    @{ await Html.RenderPartialAsync("_Footer"); }
+</div>

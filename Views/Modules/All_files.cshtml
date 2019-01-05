@@ -1,0 +1,51 @@
+﻿@model System.IO.DirectoryInfo
+
+@section Scripts {
+    <script src="@Url.Content("~/js/resources/fileform.js")"></script>
+    <script src="@Url.Content("~/js/resources/filesearch.js")"></script>
+}
+
+<div class="container">
+    @{ await Html.RenderPartialAsync("_TitleSection"); }
+    <br>
+    <div class="row">
+        <div class="col-sm-8">
+            @{ await Html.RenderPartialAsync("_FileUpload"); }
+        </div>
+            @{ await Html.RenderPartialAsync("_FileSearch"); }
+        </div>
+    </div>
+    <hr>
+</div>
+<div id='filebox' class='container'>
+    @{ 
+        var i = @Model.GetDirectories().Length;
+        string msg = "";
+        if (i == 1) {
+            msg = i + " file was found"; 
+        }
+        else {
+            msg = i + " files were found"; 
+        }
+    }
+    <p> @msg </p>
+    <br>
+    @foreach (var file in Model.EnumerateFiles())
+    {
+        <a asp-controller="Modules"
+        asp-action="File_content"
+        asp-route-module_code="@Model.Parent.Name"
+        asp-route-year="@Model.Parent.Parent.Name"
+        asp-route-folder="@Model.Name"
+        asp-route-filename=@file.Name
+        data-name=@file.Name
+        data-year=@file.CreationTime.Year
+        data-month=@file.CreationTime.Month
+        data-day=@file.CreationTime.Day
+        data-hour=@file.CreationTime.Hour
+        data-minute=@file.CreationTime.Minute
+        data-second=@file.CreationTime.Second
+        class="filename"> @file.Name </a>
+    }
+</div>
+@{ await Html.RenderPartialAsync("_Footer"); }

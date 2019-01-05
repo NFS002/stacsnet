@@ -1,0 +1,8 @@
+obj
+bin
+DS_Store
+*.dll
+*.
+.vscode
+Resources
+db.sqlite

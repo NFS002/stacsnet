@@ -1,0 +1,27 @@
+﻿@model System.IO.DirectoryInfo
+
+
+@{ await Html.RenderPartialAsync("_TitleSection"); }
+<div class='container'>
+    @{ 
+        var i = @Model.GetDirectories().Length;
+        string msg = "";
+        if (i == 1) {
+            msg = i + " year was found"; 
+        }
+        else {
+            msg = i + " years were found"; 
+        }
+    }
+    <p> @msg </p>
+    <br>
+    @foreach (var subdir in Model.EnumerateDirectories())
+    {
+        <a asp-controller="Modules"
+           asp-action="All_modules"
+           asp-route-year="@subdir.Name"
+           class="subdir">@subdir.Name</a>
+    }
+    <br>
+</div>
+@{ await Html.RenderPartialAsync("_Footer"); }

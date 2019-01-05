@@ -1,0 +1,22 @@
+@model Account;
+
+@using (Html.BeginForm("Submit","Register", FormMethod.Post, new { enctype = "multipart/form-data"})){
+@Html.AntiForgeryToken()
+<div>
+    @Html.LabelFor(m => m.email, new { style = "display:block"})
+    @Html.TextBoxFor(m => m.email, new { @class = "input-sm form-control",
+                                        style="display:inline" })
+    <span>@@st-andrews.ac.uk</span>
+    <br>
+    @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+   
+    @Html.LabelFor(m => m.uname, new { style = "display:block"})
+    @Html.TextBoxFor(m => m.uname, new { @class = "form-control input-uname"}) 
+    @Html.ValidationMessageFor(m => m.uname, "", new { @class = "text-danger" })
+    @Html.LabelFor(m => m.pwhash, new { style = "display:block"})
+    @Html.TextBoxFor(m => m.pwhash, new { @class = "input-sm form-control", type="password" }) 
+    @Html.ValidationMessageFor(m => m.pwhash, "", new { @class = "text-danger" })
+    <br>
+    <input id='submitbtn' value='Register' class='btn btn-primary' type='submit'/>
+</div>
+}

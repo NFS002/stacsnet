@@ -1,0 +1,34 @@
+@model Dictionary<string, ReportData>
+
+@{
+    var reports_json = Html.Raw(JsonConvert.SerializeObject(Model, new StringEnumConverter()));
+    var modules_json = Html.Raw(JsonConvert.SerializeObject(ViewBag.Modules));
+    var years_json = Html.Raw(JsonConvert.SerializeObject(ViewBag.Years));
+    var types = Html.Raw(JsonConvert.SerializeObject(Enum.GetNames(typeof(GradeType))));
+}
+@section Scripts {
+     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script lang="text/javascript">
+        var data = @reports_json,
+            modules = @modules_json,
+            module = '@ViewBag.Module',
+            years = @years_json,
+            year = '@ViewBag.Year'
+            types = @types
+    </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="@Url.Content("~/js/report/select.js")"></script>
+    <script src="@Url.Content("~/js/report/data.js")"></script>
+    <script src="@Url.Content("~/js/report/structure.js")"></script>
+    <script src="@Url.Content("~/js/report/form.js")"></script>
+}
+
+@{ await Html.RenderPartialAsync("_ReportHeader"); }
+<div id='content' class="container">
+    <div class="row">
+        @{ await Html.RenderPartialAsync("_ReportForm", new GradeReport()); }
+    </div>
+</div>
+<br>
+@{ await Html.RenderPartialAsync("_Footer"); }

@@ -1,0 +1,13 @@
+@using (Html.BeginForm("FileUpload", "Modules", FormMethod.Post, new {  action = "/Upload", 
+                                                                            enctype = "multipart/form-data", 
+                                                                            @id = "form"  }))
+{ 
+    <input type="file" id="files_in" name="files" multiple size="50"/>
+    <br>
+    <input type="hidden" value=@Model.FullName  name="target_path"/>
+    <input type="hidden" value=@Context.Request.GetDisplayUrl() name="return_url"/>
+    <input type="submit" class='btn btn-secondary' name="Submit" id="submit" value="Upload" />
+}
+<p class="file-info-box">
+
+</p>

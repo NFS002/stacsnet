@@ -1,0 +1,50 @@
+@model stacsnet.Models.GradeReport
+<div class="row" id="modalform" title='Submit your grades'>
+      @using (Html.BeginForm("Submit","Report",FormMethod.Post, new { enctype = "multipart/form-data"}))
+        {
+            @Html.AntiForgeryToken() 
+            <div class='col-sm-6'>
+                @Html.LabelFor(m => m.Type)
+                @Html.DropDownListFor(m => m.Type, new SelectList(Enum.GetValues(typeof(GradeType))),new { @class = "input-sm form-control",
+                                                                                                        @id= "input-gradetype" })
+                <br>
+                @Html.LabelFor(m => m.Week)
+                @Html.TextBoxFor(m => m.Week, new { @class="input-sm form-control",
+                                                    @type = "number",
+                                                    max = "13",
+                                                    @id = "input-week",
+                                                    min = "1",
+                                                    step = "1"  }) 
+            </div>
+            <div class='col-sm-6'>
+                @Html.LabelFor(m => m.Grade)
+                @Html.TextBoxFor(m => m.Grade, new { @class="input-sm form-control",
+                                                @type = "number",
+                                                @id = "input-grade",
+                                                max = "20",
+                                                min = "0",
+                                                step = "1" }) 
+                <br>
+                @Html.LabelFor(m => m.code)
+                @Html.TextBoxFor(m => m.code, new { @class="input-sm form-control",
+                                                        @id = "input-module" })
+                <br>
+                @Html.LabelFor(m => m.Year)
+                @Html.TextBoxFor(m => m.Year, new { @class="input-sm form-control",
+                                                    name = "year" })  
+
+            </div>
+            <div class='col-sm-12'>
+                <br>
+                @Html.LabelFor(m => m.descr)
+                @Html.TextBoxFor(m => m.descr, new { @class = "form-control",
+                                                    placeholder = "E.g 'Java http server...' "})
+                @Html.ValidationSummary()
+                <input id='submitbtn' class='btn btn-primary' type='submit'/>
+                <div id='date'>
+                    @DateTime.Now
+                </div>
+            </div>
+            @Html.Hidden("return_url", @Context.Request.GetDisplayUrl())
+        }
+</div>

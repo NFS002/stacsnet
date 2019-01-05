@@ -1,0 +1,60 @@
+@model stacsnet.Models.QAThread
+@section Scripts {
+	<script type='text/javascript'>
+		var comment_text = "@ViewBag.CommentText",
+		realtags = [],
+		bindtags = () => { $('#realtagsin').val( realtags.join(',') ) }
+		$('[data-toggle="tooltip"]').tooltip()
+	</script>
+    <script src="@Url.Content("~/js/qa/postcomment.js")"></script>
+	<script src="@Url.Content("~/js/qa/search.js")"></script>
+	 @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+} 
+@{ await Html.RenderPartialAsync("_QAHeader", @Model.header); }
+<div id='content' class="container">
+	<div class="row commentcount-box">
+		<small id="commentcount"><em>
+			
+		</em></small>
+	</div>
+	<div id='allcomments'>
+	@foreach (var post in Model)
+	{
+	<div class="row comment" 
+		data-title="@post.title" 
+		data-tags="@post.tags">
+
+		<div class="head">
+			<small class='comment-date'><strong class='comment-uname'>@post.uname</strong> @post.date </small>
+		</div> 
+			<h5 class="comment-text" style="max-height: 100px;overflow-y:auto;">
+				@post.text 
+			</h5>
+			@if(Model.header.date.Equals(DateTime.MinValue)) {
+				var i = @post.Children().Count();
+				var txt = (i == 1) ? "reply" : "replies";
+				var pid = @post.id;
+				<div data-toggle="tooltip" title="@post.tags" style='padding:8px' class='alert alert-info' role='alert'> 
+					@Html.ActionLink(
+						"Follow this thread (" + @i + " " + txt + ")",
+						"Thread",
+						"QA",
+						new {
+							pid = @pid
+						},
+						new {
+							@class = "btn-xs btn btn-link"
+						})
+				</div>
+			}
+			else {
+				var pid = @post.id;
+				<div data-toggle="tooltip" title="@post.tags" style='padding:8px;font-size:12px;' class='reply-btn alert alert-info' role='alert'> 
+					<a>Reply</a>
+				</div>
+			}
+		</div>	
+		}
+	</div>
+</div>
+@{ await Html.RenderPartialAsync("_Footer"); }
