@@ -50,7 +50,7 @@ do
     MODULE=$(basename $MODULEPATH)
     TARGET=$TARGETROOT/$YEAR/$MODULE
     mkdir -p "$TARGET"
-    DIRS=$(ssh -e ~/.ssh/id_rsa $REMOTENAME ls $MODULEPATH )
+    DIRS=$(ssh $REMOTENAME ls $MODULEPATH )
     echo "Syncing $MODULE"
     for DIR in $DIRS;
     do
@@ -58,7 +58,6 @@ do
         rsync $REMOTENAME:$SOURCE/$MODULE/$DIR $TARGET -azh \
         --cvs-exclude --backup --stats \
         --exclude-from=exclude.rsync \
-        -e "ssh -p1234  -i \"~/.ssh/id_rsa\"" \
         --password-file=./pw.txt \
         --hard-links --backup-dir=$BACKUPDIR \
         --partial-dir=$PARTIALDIR
