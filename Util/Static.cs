@@ -10,6 +10,8 @@ namespace stacsnet.Util {
 
         private static bool loaded = false;
         public static string url { get; set; }
+
+        public static string MountPoint { get; set; }
         public static List<string> allYears { get; set; }
 
         public static List<string> givenYears { get; set; }
@@ -24,6 +26,7 @@ namespace stacsnet.Util {
             
             mkDirs();
             url = configuration["Url"];
+            MountPoint = configuration["Mount"];
 
             string dbargs = configuration["Db"];
             if ( !string.IsNullOrEmpty(dbargs) && !dbargs.Contains("n"))
@@ -68,7 +71,7 @@ namespace stacsnet.Util {
                 }
                 allModules.AddRange(givenModules);
             }
-            DirectoryInfo parentDir = new DirectoryInfo("Resources");
+            DirectoryInfo parentDir = new DirectoryInfo(Static.MountPoint);
             foreach(var dir in parentDir.GetDirectories()) {
                 List<DirectoryInfo> modules_in_year = dir.GetDirectories().ToList();
                 foreach (var module in modules_in_year) {
@@ -90,7 +93,7 @@ namespace stacsnet.Util {
                 }
                 allYears.AddRange(givenYears);
             }
-            DirectoryInfo parentDir = new DirectoryInfo("Resources");
+            DirectoryInfo parentDir = new DirectoryInfo(Static.MountPoint);
             foreach(var dir in parentDir.GetDirectories()) {
                 string year = dir.Name;
                 if (!allYears.Contains(year))
@@ -101,7 +104,7 @@ namespace stacsnet.Util {
         }
 
         private static void mkDirs() {
-            DirectoryInfo dir = new DirectoryInfo("Resources");
+            DirectoryInfo dir = new DirectoryInfo(Static.MountPoint);
 
             if (!dir.Exists)
                 dir.Create();

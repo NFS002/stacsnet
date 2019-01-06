@@ -15,7 +15,7 @@ PARTIALDIR=~/.snsyncpartial
 YEAR=2018_2019
 SOURCEROOT=/cs/studres
 MODULECODES=CS*
-TARGETROOT=~/stacsnet/stacsnet/Resources
+TARGETROOT=~/stacsnet/Resources
 FOLDERS=("Lectures" "Examples" "Tutorials" "Graphics"
  "Practicals" "Assesment" "Answers"
  "Images", "Exams", "Notes")
@@ -74,4 +74,4 @@ echo "Done"
 # # # # # # # # #
 
 # An example SCP command for copying a directory
-#scp -r Resources nfs002@137.116.223.66:stacsnet/stacsnet/
+#scp -r Resources nfs002@137.116.223.66:stacsnet/

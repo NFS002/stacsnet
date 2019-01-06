@@ -46,7 +46,7 @@ namespace stacsnet.Controllers
         {
             ViewBag.Title = "Years";
             ViewBag.Subtitle = "Available years";
-            var dir = new DirectoryInfo("Resources");
+            var dir = new DirectoryInfo(Static.MountPoint);
 
             string error_msg = "No years were found";
 
@@ -60,7 +60,7 @@ namespace stacsnet.Controllers
         public IActionResult All_modules(string year)
         {
             ViewBag.Title = "Modules (" + year + ")";
-            string path = Path.Combine("Resources", year);
+            string path = Path.Combine(Static.MountPoint, year);
             DirectoryInfo dir = new DirectoryInfo(path);
             string error_msg = "No available modules were found ("
                                 + year
@@ -79,7 +79,7 @@ namespace stacsnet.Controllers
         public IActionResult All_resource_types(string module_code, string year)
         {
             ViewBag.Title = "Resources for " + module_code + " (" + year + ")";
-            string path = Path.Combine("Resources", year, module_code);
+            string path = Path.Combine(Static.MountPoint, year, module_code);
             DirectoryInfo dir = new DirectoryInfo(path);
             string error_msg = "No available entries were found for " 
                                 + module_code 
@@ -100,7 +100,7 @@ namespace stacsnet.Controllers
         public IActionResult All_files(string module_code, string year, string folder)
         {
             ViewBag.Title = folder + " for " + module_code + " (" + year + ")";
-            string path = Path.Combine("Resources", year, module_code, folder);
+            string path = Path.Combine(Static.MountPoint, year, module_code, folder);
             DirectoryInfo dir = new DirectoryInfo(path);
             if (!dir.Exists) {
                 string error_msg = "The folder "
@@ -121,7 +121,7 @@ namespace stacsnet.Controllers
         public IActionResult File_content(string module_code, string year, string folder, string filename)
         {
             ViewBag.Title = filename;
-            string full_path = Path.Combine("Resources", year, module_code, folder, filename);
+            string full_path = Path.Combine(Static.MountPoint, year, module_code, folder, filename);
 
             if (!System.IO.File.Exists(full_path)) {
                 string error_msg = filename
