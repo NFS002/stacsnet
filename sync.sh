@@ -60,7 +60,7 @@ do
         --exclude-from=exclude.rsync \
         --hard-links --backup-dir=$BACKUPDIR \
         --partial-dir=$PARTIALDIR
-        for FOLDER in $FOLDERS 
+        for FOLDER in "${FOLDERS[@]}" 
         do
             F=$TARGET/$FOLDER
             echo "Creating directory $F"
