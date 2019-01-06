@@ -21,8 +21,7 @@ namespace stacsnet.Controllers
                 + " to access the site itself.";
                 ViewBag.Css = "alert-info";
             }
-            else {
-		ViewBag.Subtitle = "TempData is Null";    
+            else {    
                 ViewBag.RegisterMsg = TempData["RegisterMsg"].ToString();
                 ViewBag.Css = TempData["Css"].ToString();
             }
