@@ -62,9 +62,9 @@ do
         --partial-dir=$PARTIALDIR
         for FOLDER in $FOLDERS 
         do
-            F = $TARGET/$FOLDER
+            F=TARGET/$FOLDER
+            echo "Creating directory $F"
             mkdir -p $F
-            echo $F
         done
         echo "Finished syncing $DIR"
     done
