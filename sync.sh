@@ -15,7 +15,7 @@ PARTIALDIR=~/.snsyncpartial
 YEAR=2018_2019
 SOURCEROOT=/cs/studres
 MODULECODES=CS*
-TARGETROOT=~/stacsnet/Resources
+TARGETROOT=/stacsnet
 FOLDERS=("Lectures" "Examples" "Tutorials" "Graphics"
  "Practicals" "Assesment" "Answers"
  "Images" "Exams" "Notes")
