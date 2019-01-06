@@ -53,7 +53,6 @@ namespace stacsnet
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
             #pragma warning disable
             app.UseStatusCodePages(async context => {
@@ -170,6 +169,7 @@ namespace stacsnet
                           action = "Notfound" });
 
             });
+	    app.UseCookiePolicy();
         }
     }
 }

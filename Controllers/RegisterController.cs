@@ -23,7 +23,7 @@ namespace stacsnet.Controllers
                 if (old_account != null) {
                     if (old_account.verified) {
                         TempData["RegisterMsg"] = "The email address " + account.email
-                        + "have been registered and confirmed. The username and password you supplied when creating the account"
+                        + " has been registered and confirmed. The username and password you supplied when creating the account"
                         + " are valid to authenticate you on this site." ;
                         TempData["Css"] = "alert-info";
                     }
