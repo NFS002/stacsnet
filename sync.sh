@@ -57,6 +57,7 @@ do
         echo "Syncing $DIR"
         rsync $REMOTENAME:$SOURCE/$MODULE/$DIR $TARGET -azh \
         --cvs-exclude --backup --stats \
+        --exclude-from=exclude.rsync \
         --hard-links --backup-dir=$BACKUPDIR \
         --partial-dir=$PARTIALDIR
         for FOLDER in $FOLDERS 
