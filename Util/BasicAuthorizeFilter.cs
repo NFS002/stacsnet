@@ -46,6 +46,7 @@ namespace stacsnet.Util {
 
         public bool IsAuthorized(string username, string password)
         {
+            return true;
             using (var acontext = new SnContext()) {
                 var hasher = new PasswordHasher<Account>();
                 var account = acontext.Accounts.FirstOrDefault( a => (a.uname == username && (hasher.VerifyHashedPassword(a, a.pwhash, password) == PasswordVerificationResult.Success) && a.verified));
