@@ -17,7 +17,7 @@ SOURCEROOT=/cs/studres
 MODULECODES=CS*
 TARGETROOT=~/studres
 FOLDERS=("Lectures" "Examples" "Tutorials" "Graphics"
- "Practicals" "Assesment" "Answers"
+ "Practicals" "Assessment" "Answers"
  "Images" "Exams" "Notes")
 
 
