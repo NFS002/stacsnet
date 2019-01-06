@@ -58,7 +58,7 @@ do
         rsync $REMOTENAME:$SOURCE/$MODULE/$DIR $TARGET -azh \
         --cvs-exclude --backup --stats \
         --exclude-from=exclude.rsync \
-        --password-file=pw.txt
+        --password-file=./pw.txt \
         --hard-links --backup-dir=$BACKUPDIR \
         --partial-dir=$PARTIALDIR
         for FOLDER in "${FOLDERS[@]}" 
