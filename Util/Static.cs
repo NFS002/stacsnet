@@ -23,10 +23,9 @@ namespace stacsnet.Util {
         public static void init(IConfiguration configuration) {
             if (loaded)
                 return;
-            
-            mkDirs();
             url = configuration["Url"];
             MountPoint = configuration["Mount"];
+            mkDirs();
 
             string dbargs = configuration["Db"];
             if ( !string.IsNullOrEmpty(dbargs) && !dbargs.Contains("n"))
