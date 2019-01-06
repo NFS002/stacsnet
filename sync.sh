@@ -62,7 +62,9 @@ do
         --partial-dir=$PARTIALDIR
         for FOLDER in $FOLDERS 
         do
-            mkdir -p "$TARGET/$FOLDER"
+            F = $TARGET/$FOLDER
+            mkdir -p $F
+            echo $F
         done
         echo "Finished syncing $DIR"
     done
