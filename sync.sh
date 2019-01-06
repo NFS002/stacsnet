@@ -18,7 +18,7 @@ MODULECODES=CS*
 TARGETROOT=~/stacsnet/Resources
 FOLDERS=("Lectures" "Examples" "Tutorials" "Graphics"
  "Practicals" "Assesment" "Answers"
- "Images", "Exams", "Notes")
+ "Images" "Exams" "Notes")
 
 
 
@@ -62,7 +62,7 @@ do
         --partial-dir=$PARTIALDIR
         for FOLDER in $FOLDERS 
         do
-            F=TARGET/$FOLDER
+            F=$TARGET/$FOLDER
             echo "Creating directory $F"
             mkdir -p $F
         done
