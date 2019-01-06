@@ -22,6 +22,7 @@ namespace stacsnet.Util {
             if (loaded)
                 return;
             
+            mkDirs();
             url = configuration["Url"];
 
             string dbargs = configuration["Db"];
@@ -34,6 +35,7 @@ namespace stacsnet.Util {
         }
         private static void refreshdb(string args) {
             using (var context = new SnContext ()) {
+                context.Database.EnsureCreated();
                 foreach(char c in args) {
                     switch (c) {
                         case 't':
@@ -96,6 +98,22 @@ namespace stacsnet.Util {
             }
             if (!givenYears.Any())
                 givenYears.AddRange(allYears);
+        }
+
+        private static void mkDirs() {
+            DirectoryInfo dir = new DirectoryInfo("Resources");
+
+            if (!dir.Exists)
+                dir.Create();
+
+            dir = new DirectoryInfo("Db");
+
+            if (!dir.Exists)
+                dir.Create();
+            
+            if (File.Exists("Db/db.sqlite"))
+                File.Create("Db/db.sqlite");
+
         }
     }
 }
