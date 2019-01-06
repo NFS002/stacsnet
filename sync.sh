@@ -16,9 +16,9 @@ YEAR=2018_2019
 SOURCEROOT=/cs/studres
 MODULECODES=CS*
 TARGETROOT=~/studres
-FOLDERS=("Lectures" "Examples" "Tutorials" "Graphics"
- "Practicals" "Assessment" "Answers"
- "Images" "Exams" "Notes")
+FOLDERS=("Lectures" "Examples" "Tutorials"
+    "Practicals" "Images"
+    "Exams" "Notes")
 
 
 
