@@ -1,12 +1,7 @@
 @model stacsnet.Models.QAPost
 <div class="row container">
     <div class='col-sm-8'>
-        @if (TempData["ErrMsg"] != null) {
-            <h5 class='alert @TempData["Css"]' style="float:right;" role='alert'>
-                @TempData["ErrMsg"]
-            </h5>
-        }
-        else if (!Model.date.Equals(DateTime.MinValue)) {
+        @if (!Model.date.Equals(DateTime.MinValue)) {
             <a asp-controller="QA" asp-action="Index">
                 <button class="btn btn-outline-secondary" style="margin-top:13px;float:right">
                     <h5><i class="fa fa-xl fa-arrow-left"></i>Back to all posts</h5>
@@ -76,8 +71,13 @@
     </div>
 </div>
 </div>
+<div class="row container">
+    @{ await Html.RenderPartialAsync("_Flash"); }
+</div>
 <hr>
 <div class="row" id="commentform" title='Post a comment' >
-    @{ Model.text = ""; }
-@{ await Html.RenderPartialAsync("_QAPost", @Model); }
+    @{  
+        Model.text = "";
+        await Html.RenderPartialAsync("_QAPost", @Model); 
+    }
 </div>

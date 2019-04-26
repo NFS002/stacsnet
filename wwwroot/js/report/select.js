@@ -2,7 +2,6 @@ $(function(){
     select_module = $('#select-module'),
     select_year = $('#select-year'),
     btn_select = $('.header-box a')
-    $('.alert').fadeOut(3500)
     modules.forEach(m => {
         var option = $('<option></option>')
         option.attr('value', m)

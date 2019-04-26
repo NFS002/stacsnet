@@ -1,0 +1,11 @@
+
+@if( TempData.ContainsKey( "Flash" ) ) {
+    string msg = TempData[ "Flash" ].ToString();
+    string css = TempData.ContainsKey( "FlashCss" ) ? TempData[ "FlashCss" ].ToString() : "info";
+    <div class="flash alert alert-@css">
+        <h5 class="font-weight-bold">
+            @msg
+            <i class="btn-flash fa fa-times" style="float:right"></i>
+        <h5>
+    </div>
+}

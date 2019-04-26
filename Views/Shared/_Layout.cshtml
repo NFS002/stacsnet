@@ -38,14 +38,12 @@
                     <li><a asp-controller="Modules" asp-action="All_years">Modules</a></li>
                     <li><a asp-controller="QA" asp-action="Index">Q & A</a></li>
                     @{ 
-                        var year = Static.givenYears.FirstOrDefault();
-                        var module = Static.givenModules.FirstOrDefault();
+                        var year = Static.YEARS.First();
+                        var module = Static.MODULES.First();
                     }
-                    @if(year != null && module != null) {
-                        <li><a asp-controller="Report" asp-action="Index" asp-route-module_code="@module" asp-route-year="@year">
-                            Grade averages
-                        </a></li>
-                    }
+                    <li><a asp-controller="Report" asp-action="Index" asp-route-module_code="@module" asp-route-year="@year">
+                        Grade averages
+                    </a></li>
                     <li><a href="https://github.com/NFS002/stacsnet/wiki">Wiki</a></li>
                     <li><a id='privacylink'>Your privacy</a></li>
                     <li><a href='https://github.com/NFS002/stacsnet/issues'>Bugs & feature requests</a></li>
@@ -76,7 +74,8 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="~/js/home/yourprivacy.js"></script>
+        <script src="~/js/global/yourprivacy.js"></script>
+        <script src="~/js/global/flash.js"></script>
         @RenderSection("Scripts", false)
     </environment>
     <environment exclude="Development">
@@ -91,7 +90,7 @@
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="~/js/home/yourprivacy.js"></script>
+        <script src="~/js/site.min.js"></script>
         @RenderSection("Scripts", false)
     </environment>
 </body>

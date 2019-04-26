@@ -26,60 +26,63 @@ namespace stacsnet.Controllers
                 post.date = DateTime.Now;
                 context.QAPosts.Add(post);
                 context.SaveChanges();
-                TempData["ErrMsg"] = "Comment posted";
-                TempData["Css"] = "alert-success";
+                Flash( "Comment posted", "success");
             }
             return Redirect(return_url); 
         }
 
         public IActionResult Index() {
-            ViewBag.Title = "QA board";
-            using (var context = new SnContext ()) {
-                var posts = context.QAPosts.Where(p => p.pid == "0").ToList();
-                QAThread thread = new QAThread();
-                ViewBag.Subtitle = "QA board ";
-                ViewBag.ButtonText = "Post a question or comment";
-                ViewBag.CommentText = "posts";
-                thread.posts = posts;
+            var thread = findThread( "0" );
+            ViewBag.Title = ViewBag.Subtitle = "QA board ";
+            ViewBag.ButtonText = "Post a question or comment";
+            ViewBag.CommentText = "posts";
+            return View( thread );
+        }
 
-                thread.header = new QAPost {
-                    pid = "0",
-                    date = DateTime.MinValue,
-                    text = "A threaded message board where you can anonymously ask questions about any of course content."
-                    +
-                    "Anyone may reply to your message. The posts below show the most recent threads.",
-                    tags = "E.g,Java,OOP,Inheritance"
+        public IActionResult Thread( string pid ) {
+            if ( pid.Equals("0") ) 
+                return RedirectToAction( "Index" );
+            ViewBag.Title = ViewBag.Subtitle = "QA board";
+            ViewBag.ButtonText = "Reply";
+            ViewBag.CommentText = "replies";
+            QAThread thread = findThread( pid );
+            if ( thread == null ) {
+                Flash( "No matching QA posts were found", "danger" );
+                return RedirectToAction( "Index" );
+            }
+            else  
+                return View( "Index", thread );
+
+        }
+
+        private IActionResult Error(int status, string error_msg ) =>
+            RedirectToRoute( "Error", new { status = status, error_msg = error_msg } );
+
+        private void Flash( string error_msg, string css ) {
+            TempData[ "Flash" ] = error_msg;
+            TempData[ "FlashCss" ] = css;
+        }
+
+        private QAThread findThread( string pid ) {
+            QAPost header = null;
+            List<QAPost> posts = new List<QAPost>();
+            var context = new SnContext ();
+
+            if ( pid.Equals("0")) 
+                header = Static.FIRST_POST;
+            else
+                header = context.QAPosts.Where(p => p.id == pid).FirstOrDefault();
+            
+            if (header == null )
+                return null;
+            else {
+                posts.AddRange( context.QAPosts.Where(p => p.pid == pid) );
+
+                return new QAThread() {
+                    header = header,
+                    posts = posts
                 };
-
-                return View(thread);
             }
-        }
-
-        public IActionResult Thread(string pid) {
-            ViewBag.Title = "QA board";
-            using (var context = new SnContext ()) {
-                var header= context.QAPosts.Where(p => p.id == pid).FirstOrDefault();
-                if (header == null) {
-                    var error_msg = "No matching QA posts were found";
-                    TempData["ErrMsg"] = error_msg;
-                    return RedirectToAction("Notfound","Home", new { status = 400 });
-                }
-
-                var posts = context.QAPosts.Where(p => p.pid == pid).ToList();
-                QAThread thread = new QAThread();
-                ViewBag.Subtitle = "QA board ";
-                ViewBag.ButtonText = "Reply";
-                ViewBag.CommentText = "replies";
-                header.title = header.title;
-                thread.header = header;
-                thread.posts = posts;
-                return View("Index", thread);
-            }
-        }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

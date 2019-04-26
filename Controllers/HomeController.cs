@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using stacsnet.Models;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace stacsnet.Controllers
 {
@@ -14,38 +15,41 @@ namespace stacsnet.Controllers
         {
             ViewBag.Subtitle = "An eLearning platform for St. Andrews Computer Science Students";
             ViewBag.Title = "Home";
-            if (TempData["RegisterMsg"] == null) {
-                ViewBag.RegisterMsg = "Your username and password do not have to be associated with your university account" +
-                ", but you must provide a valid university email address to register. " +
-                "Any posts or submissions you make on stacsnet can be anonymous or under a different username. Creating this account authenticates you "
-                + " to access the site itself.";
-                ViewBag.Css = "alert-info";
-            }
-            else {    
-                ViewBag.RegisterMsg = TempData["RegisterMsg"].ToString();
-                ViewBag.Css = TempData["Css"].ToString();
-            }
             return View(new Account());
         }
 
-        public IActionResult Notfound(string status)
+        private string ErrorType() {
+        string errorType = "";
+        var statusCodeReExecuteFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+        if (statusCodeReExecuteFeature != null)
         {
-            ViewBag.Title = "Error";   
-            ViewBag.Subtitle = status;
+            errorType = statusCodeReExecuteFeature.OriginalPath;
+            if ( errorType.StartsWith("/") ) {
+                errorType = errorType.Substring(1);
+            }
+            int index = errorType.IndexOf("/");
+            if (index != -1)
+                errorType = errorType.Substring(0, index);
+            
+            }
+            return errorType;
+        }
 
-            if (TempData.ContainsKey("ErrMsg"))
-                ViewBag.ErrMsg = TempData["ErrMsg"];
-                
-            else 
-                ViewBag.ErrMsg = "Something happened...";
+        
+        public IActionResult Error(int status = 500, string error_msg = "") {
 
+            if (status == 401 && string.IsNullOrEmpty( error_msg ) ) 
+                error_msg = "Please sign in or register";
+            
+            TempData[ "ErrMsg" ] = error_msg;
+            TempData[ "Status" ] = status;
+            
             return View();
         }
 
-        public IActionResult Error()
-        {
-            ViewBag.Title = "Error"; 
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        private void Flash( string error_msg, string css ) {
+            TempData[ "Flash" ] = error_msg;
+            TempData[ "FlashCss" ] = css;
         }
     }
 }

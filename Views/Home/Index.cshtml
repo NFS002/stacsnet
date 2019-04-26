@@ -36,11 +36,14 @@
         @{ await Html.RenderPartialAsync("_RegisterForm"); }
         <br>
         <div class="alert-wrapper">
-            <div role="alert" class="alert @ViewBag.Css">
+            <div role="alert" class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                @ViewBag.RegisterMsg
+                Your username and password do not have to be associated with your university account, 
+                but you must provide a valid university email address to register. 
+                Any posts or submissions you make on stacsnet can be anonymous or under a different username. 
+                Creating this account authenticates you only to access this site.
             </div>
         </div>
     @{ await Html.RenderPartialAsync("_Footer"); }

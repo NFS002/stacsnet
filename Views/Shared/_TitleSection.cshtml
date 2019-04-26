@@ -1,5 +1,10 @@
-<div class="container">
-    <h1 class="text-uppercase">Stacsnet</h1>
-    <h3> @ViewBag.Subtitle </h3>
+<div class="row justify-content-between container">
+    <div class="col-sm-4 no-padding">
+        <h1 class="text-uppercase">Stacsnet</h1>
+        <h3> @ViewBag.Subtitle </h3>
+    </div>
+    <div class="col-sm-8 no-padding">
+        @{ await Html.RenderPartialAsync("_Flash"); }
+    </div>
 </div>
 <hr>

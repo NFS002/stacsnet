@@ -15,11 +15,10 @@ namespace stacsnet
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+
+        public Startup( IConfiguration configuration )
         {
             Configuration = configuration;
-
-            Static.init(configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -38,31 +37,26 @@ namespace stacsnet
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env )
         {
+            Static.init( Configuration, env );
+
+            app.UseStatusCodePagesWithReExecute("/Error","?status={0}");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Error/500");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            #pragma warning disable
-            app.UseStatusCodePages(async context => {
-                var response = context.HttpContext.Response;
-                var headers = response.Headers;
-                var err = response.StatusCode;
-                if (!headers.ContainsKey("WWW-Authenticate"))
-                    response.Redirect("/Error/" + err);
-            });
-            #pragma warning restore
+        
 
             app.UseMvc(routes =>
             {
@@ -72,6 +66,13 @@ namespace stacsnet
                     new {
                         controller = "Modules",
                         action = "Upload" });
+                    
+                /* routes.MapRoute(
+                    "Module_entry",
+                    "ModuleEntry",
+                    new {
+                        controller = "Modules",
+                        action = "ModuleEntry" }); */
 
                 routes.MapRoute(
                     "RegisterEmail",
@@ -163,10 +164,11 @@ namespace stacsnet
                           action = "Index" });
 
                 routes.MapRoute(
-                    "404",
-                    "Error/{status}",
+                    "Error",
+                    "Error",
                     new { controller = "Home",
-                          action = "Notfound" });
+                          action = "Error" });
+
 
             });
 	    app.UseCookiePolicy();

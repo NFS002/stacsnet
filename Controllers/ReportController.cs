@@ -20,45 +20,25 @@ namespace stacsnet.Controllers
     {
         [HttpGet]
         public IActionResult Index(string module_code, string year) {
-            ViewBag.Title = "class averages for " + module_code + "(" + year + ")";
-            using (var grcontext = new SnContext()) {
-                var currentYear = DateTime.Now.Year;
-                var allreports = grcontext.GradeReports.Where(g => g.code == module_code && g.Year == year).ToList();
+
+            ViewBag.Modules = Static.MODULES;
+            ViewBag.Years = Static.YEARS;
+        
+
+            if ( !Static.isYear( year ) || !Static.isModule( module_code ) ) {
+                string error_msg =  "Invalid selection " + "(" + module_code + ", " + year + ").";
+                string default_module = Static.MODULES.First();
+                string default_year = Static.YEARS.First();
+                Flash(error_msg, "danger");
+                return RedirectToAction( "Index", new { module_code = default_module, year = default_year} );
+
+            }
+            else {
                 ViewBag.Module = module_code;
-                ViewBag.Modules = Static.givenModules;
-                ViewBag.Years = Static.givenYears;
-                ViewBag.Year = year;        
-                ViewBag.Subtitle = "Grade Reports for " + module_code + " (" + year + ")";
-                var reports = new Dictionary<string,ReportData>();
-                var mincount = 3;
-                foreach (var type in Enum.GetNames(typeof(GradeType))) {
-                    var typedreports = allreports.Where(g => g.Type.ToString() == type).ToList();
-                    var count = typedreports.Count();
-                    if (count < mincount) {
-                       reports.Add(type, new ReportData {
-                            count = count,
-                            min = mincount,
-                            reports = new List<ArrayList>()
-                        }); 
-                    }
-                    else {
-                        var list = new List<ArrayList>();
-
-                        foreach (var row in typedreports) {
-                            var innertype = type;
-                            if (type == "Practical")
-                                innertype = "W" + row.Week;
-                            list.Add( new ArrayList{ innertype, row.Grade } );
-                        }
-
-                        reports.Add(type, new ReportData {
-                            count = count,
-                            min = mincount,
-                            reports = list
-                        });
-                    }
-                }
-                return View(reports);
+                ViewBag.Year = year;
+                ViewBag.Title = "Grade reports";
+                ViewBag.Subtitle = "Grade reports for " + module_code + " (" + year + ")";
+                return View( loadReports( module_code, year ));
             }
         }
 
@@ -70,14 +50,57 @@ namespace stacsnet.Controllers
                     context.GradeReports.Add(report);
                     context.SaveChanges();
                 }
-                TempData["Msg"] = "Submission received";
-                TempData["Css"] = "alert alert-success";
-            }   
-            else {
-                TempData["Msg"] = "Submission not received, please try again";
-                TempData["Code"] = "alert alert-danger";
+                Flash( "submission received", "success" );
             }
+            else 
+                Flash( "submission not received", "danger");
+            
             return Redirect(return_url);
         }
+
+        private Dictionary<string, ReportData> loadReports( string module_code, string year ) {
+                using (var context = new SnContext()) {
+                    var allreports = context.GradeReports.Where(g => g.code == module_code && g.Year == year).ToList();
+                    var reports = new Dictionary<string, ReportData>();
+                    var mincount = 3;
+                    foreach (var type in Enum.GetNames(typeof(GradeType))) {
+                        var typedreports = allreports.Where(g => g.Type.ToString() == type).ToList();
+                        var count = typedreports.Count();
+                        if (count < mincount) {
+                        reports.Add(type, new ReportData {
+                                count = count,
+                                min = mincount,
+                                reports = new List<ArrayList>()
+                            }); 
+                        }
+                        else {
+                            var list = new List<ArrayList>();
+
+                            foreach (var row in typedreports) {
+                                var innertype = type;
+                                if (type == "Practical")
+                                    innertype = "W" + row.Week;
+                                list.Add( new ArrayList{ innertype, row.Grade } );
+                            }
+
+                            reports.Add(type, new ReportData {
+                                count = count,
+                                min = mincount,
+                                reports = list
+                            });
+                        }
+                    }
+                return reports;
+            }
+        }
+
+        private IActionResult Error(int status, string error_msg ) =>
+            RedirectToRoute( "Error", new { status = status, error_msg = error_msg } );
+
+        private void Flash( string error_msg, string css ) {
+            TempData[ "Flash" ] = error_msg;
+            TempData[ "FlashCss" ] = css;
+        }
+
     }
 }

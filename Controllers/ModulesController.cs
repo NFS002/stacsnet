@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -25,121 +26,184 @@ namespace stacsnet.Controllers
                     string file_name = file.FileName;
                     if (!String.IsNullOrEmpty(file_name)) {
                         string full_path = Path.Combine(target_path, file_name);
-                        using (var stream = new FileStream(full_path, FileMode.Create)) {
-                            await file.CopyToAsync(stream);
+                        if ( !System.IO.File.Exists( full_path) ) {
+                            using (var stream = new FileStream(full_path, FileMode.Create)) {
+                                await file.CopyToAsync(stream);
+                            }
                         }
                     }
                     else {
-                        TempData["ErrMsg"] = "Some files could not be uploaded. "
-                        + "Please check each file has a valid file name and extenion and try again.";
-                        TempData["Css"] = "alert-danger";
+                        Flash( "Some files could not be uploaded.  Please check each file has a valid file name and extenion and try again", "danger");
                     }
                 }
             }
-            // process uploaded files
-            // Don't rely on or trust the FgerleName property without validation.
             return Redirect(return_url);
+        }
+
+        //POST: /ModuleEntry
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ModuleEntry( ModuleEntry moduleEntry ) {
+
+            if (ModelState.IsValid ) {
+                string year = moduleEntry.Year;
+                string module = moduleEntry.Module;
+                string folder = moduleEntry.Folder;
+                string full_path = Path.Combine( Static.MOUNT, year, module, folder );
+                DirectoryInfo dir = new DirectoryInfo( full_path );
+                dir.Create();
+                return All_files( module, year, folder );
+            }
+
+            else 
+                return Error( 400, "Invalid module entry" );
+            
         }
 
         // GET: /Modules
         public IActionResult All_years()
         {
-            ViewBag.Title = "Years";
-            ViewBag.Subtitle = "Available years";
-            var dir = new DirectoryInfo(Static.MountPoint);
-
-            string error_msg = "No years were found";
-
-            if (!dir.Exists) // Error
-                return RedirectToAction("Notfound", "Home", new { status = 404,
-                                                                msg = error_msg } );
-
-            return View(dir);
+            ViewBag.Title = ViewBag.Subtitle = "Modules";
+            var dir = new DirectoryInfo( Static.MOUNT );
+            if ( !dir.Exists ) 
+                return RedirectToRoute( "Error" );
+            return View( dir );
         }
 
         public IActionResult All_modules(string year)
         {
-            ViewBag.Title = "Modules (" + year + ")";
-            string path = Path.Combine(Static.MountPoint, year);
-            DirectoryInfo dir = new DirectoryInfo(path);
-            string error_msg = "No available modules were found ("
-                                + year
-                                + ")";
-
-            if (!dir.Exists) {
-                TempData["ErrMsg"] = error_msg;
-                return RedirectToAction("Notfound", "Home", new { status = 404 } );
+            string error_year = "'" + year + "'";
+            
+            if ( !Static.isYear( year ) ) {
+                error_year = year.Substring(0,4) + "...";
+                string error_msg = "No modules were found in " + error_year;
+                Flash( error_msg, "danger" );
+                return RedirectToAction( "All_years" );
             }
-
-            ViewBag.Subtitle = "Currenly available modules (" + year + ")";
-            return View(dir);
+            else {
+                string path = Path.Combine( Static.MOUNT, year);
+                DirectoryInfo dir = new DirectoryInfo( path );
+    
+                if ( !dir.Exists ) {
+                     string error_msg = "No modules were found in " + error_year;
+                    Flash( error_msg, "danger" );
+                    return RedirectToAction( "All_years" );
+                }
+                else {
+                    ViewBag.Title = ViewBag.Subtitle = "Modules (" + year + ")";
+                    return View( dir );
+                }
+            }
         }
 
 
         public IActionResult All_resource_types(string module_code, string year)
         {
-            ViewBag.Title = "Resources for " + module_code + " (" + year + ")";
-            string path = Path.Combine(Static.MountPoint, year, module_code);
-            DirectoryInfo dir = new DirectoryInfo(path);
-            string error_msg = "No available entries were found for " 
-                                + module_code 
-                                + " (" 
-                                + year
-                                + ")";
+            string error_year = year;
+            string default_year = year;
+            string error_module_code = module_code;
+        
+            
+            if ( year.Length > 4 ) {
+                error_year = year.Substring(0,4) + "...";
+                default_year = Static.YEARS.First();
+            }
+            
+            
+            if ( module_code.Length > 6 )
+                error_module_code = error_module_code.Substring(0, 6);
+            
+            
 
-            if (!dir.Exists) { // Error
-                TempData["ErrMsg"] = error_msg;
-                return RedirectToAction("Notfound", "Home", new { status = 404 } );
+            if ( !Static.isYear( year ) ||
+                 !Static.isModule( module_code) ) {
+                string error_msg = "No resources were found for " + error_module_code + " (" + error_year + ")";
+                Flash( error_msg, "danger" );
+                return RedirectToAction( "All_modules", new { year = default_year } );
             }
 
-            ViewBag.Subtitle = "Resources for " + module_code + " (" + year + ")";
-            return View(dir);
+
+
+            string path = Path.Combine(Static.MOUNT, year, module_code);
+            DirectoryInfo dir = new DirectoryInfo( path );
+
+            if ( !dir.Exists ) { /* Error */
+                string error_msg = "No resources were found for " + error_module_code + " (" + error_year + ")";
+                Flash( error_msg, "danger" );
+                return RedirectToAction( "All_modules", new { year = default_year } );
+            }
+            else {
+                ViewBag.Title = ViewBag.Subtitle = "Resources (" + module_code + ", " + year + ")";
+                return View( dir ); 
+            }  
         }
 
 
         public IActionResult All_files(string module_code, string year, string folder)
         {
-            ViewBag.Title = folder + " for " + module_code + " (" + year + ")";
-            string path = Path.Combine(Static.MountPoint, year, module_code, folder);
-            DirectoryInfo dir = new DirectoryInfo(path);
-            if (!dir.Exists) {
-                string error_msg = "The folder "
-                                + folder
-                                + " was not found in "
-                                + module_code 
-                                + " (" 
-                                + year
-                                + ")";
-                
-                TempData["ErrMsg"] = error_msg;                
-                return RedirectToAction("Notfound", "Home", new { status = 404 } );
+            string error_year = year;
+            string default_year = year;
+        
+            string error_module_code = module_code;
+            string default_module_code = Static.MODULES.First();
+
+            string error_folder = folder;
+        
+            if ( year.Length > 4 ) {
+                error_year = year.Substring(0,4) + "...";
+                default_year = Static.YEARS.First();
             }
-            ViewBag.Subtitle = folder + " for " + module_code + " (" + year + ")";
-            return View(dir);
+            
+            if ( module_code.Length > 6 )
+                error_module_code = error_module_code.Substring(0, 6);
+
+            if ( folder.Length > 10 )
+                error_folder = error_folder.Substring(0, 10);
+            
+            if ( !Static.isYear( year ) ||
+                 !Static.isModule( module_code) ||
+                 !Static.isFolder( folder ) ) {
+                    string error_msg = "No resources were found for " + error_module_code + " (" + error_year + ")";
+                    Flash( error_msg, "danger" );
+                    return RedirectToAction( "All_resource_types", new { year = default_year, module_code = default_module_code } );
+            }
+
+            string path = Path.Combine(Static.MOUNT, year, module_code, folder);
+            DirectoryInfo dir = new DirectoryInfo( path );
+
+            if ( !dir.Exists ) {
+                string error_msg = "No resources were found in " + folder + " (" + module_code + ", " + year + ")";
+                Flash( error_msg, "danger" );
+                return RedirectToAction( "All_resource_types", new { year = default_year, module_code = default_module_code } );
+            }
+            else {
+                ViewBag.Title = ViewBag.Subtitle = folder +  " (" + module_code + ", " + year + ")";
+                return View( dir ); 
+            } 
         }
 
         public IActionResult File_content(string module_code, string year, string folder, string filename)
         {
             ViewBag.Title = filename;
-            string full_path = Path.Combine(Static.MountPoint, year, module_code, folder, filename);
+            string full_path = Path.Combine(Static.MOUNT, year, module_code, folder, filename);
 
-            if (!System.IO.File.Exists(full_path)) {
-                string error_msg = filename
-                                + " was not found in " 
-                                + folder 
-                                + " for "
-                                + module_code 
-                                + " (" 
-                                + year
-                                + ")";
-                TempData["ErrMsg"] = error_msg;
-                return RedirectToAction("Notfound", "Home", new { status = 404 } );
+            if ( !System.IO.File.Exists(full_path)) 
+                return Error( 404, "File not found" );
+            
+            else {
+                string ext = Path.GetExtension( full_path );
+                string type = MimeTypeMap.GetMimeType( ext );
+                FileStream stream = new FileStream( @full_path, FileMode.Open );
+                return new FileStreamResult( stream, type );
             }
-            string ext = Path.GetExtension(full_path);
-            string type = MimeTypeMap.GetMimeType(ext);
+        }
 
-            var stream = new FileStream(@full_path, FileMode.Open);
-            return new FileStreamResult(stream, type);  
+        private IActionResult Error(int status, string error_msg ) =>
+            RedirectToRoute( "Error", new { status = status, error_msg = error_msg } );
+        
+        private void Flash( string error_msg, string css ) {
+            TempData[ "Flash" ] = error_msg;
+            TempData[ "FlashCss" ] = css;
         }
     }
 }

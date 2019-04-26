@@ -1,0 +1,30 @@
+@model stacsnet.Models.ModuleEntry;
+
+<div class="row" id="modalform" title='Submit your grades'>
+      @using (Html.BeginForm("ModuleEntry","Home",FormMethod.Post, new { enctype = "multipart/form-data"}))
+        {
+            @Html.AntiForgeryToken() 
+            <div class='col-sm-6'>
+                
+                <br>
+                
+            </div>
+            <div class='col-sm-6'>
+                
+                <br>
+              
+                <br>
+                
+            </div>
+            <div class='col-sm-12'>
+                <br>
+                
+                @Html.ValidationSummary()
+                <input id='submitbtn' class='btn btn-primary' type='submit'/>
+                <div id='date'>
+                    @DateTime.Now
+                </div>
+            </div>
+            @Html.Hidden("return_url", @Context.Request.GetDisplayUrl())
+        }
+</div>

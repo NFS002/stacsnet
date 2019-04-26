@@ -22,15 +22,15 @@ namespace stacsnet.Controllers
                 var old_account = acontext.Accounts.FirstOrDefault( a => a.email == account.email);
                 if (old_account != null) {
                     if (old_account.verified) {
-                        TempData["RegisterMsg"] = "The email address " + account.email
+                        string msg = "The email address " + account.email
                         + " has been registered and confirmed. The username and password you supplied when creating the account"
                         + " are valid to authenticate you on this site." ;
-                        TempData["Css"] = "alert-info";
+                        Flash( msg, "success" );
                     }
                     else {
-                        TempData["RegisterMsg"] = "The email address " + account.email + "@st-andrews.ac.uk " + "has already submitted for registration. " 
+                        string msg = "The email address " + account.email + "@st-andrews.ac.uk has already submitted for registration. " 
                         + "Please check your emails from stacnet@gmail.com and open the confirmation link supplied.";
-                        TempData["Css"] = "alert-warning";
+                        Flash( msg, "warning" );
                     }
                 }
                 else {
@@ -41,9 +41,9 @@ namespace stacsnet.Controllers
                     account.verified = false;
                     acontext.Accounts.Add(account);
                     acontext.SaveChanges();
-                    TempData["RegisterMsg"] = "The email address " + account.email + "@st-andrews.ac.uk" + " was succesfully submitted for registration. "
+                    string msg = "The email address " + account.email + "@st-andrews.ac.uk" + " was succesfully submitted for registration. "
                     + "Please check your emails from stacsnet@gmail.com and open the confirmation link supplied.";
-                    TempData["Css"] = "alert-info";
+                    Flash( msg, "info" );
                 }
                 return RedirectToAction("Index", "Home");
             }
@@ -56,9 +56,9 @@ namespace stacsnet.Controllers
             using (var acontext = new SnContext()) {
                 var account = acontext.Accounts.FirstOrDefault( a => a.key == key);
                 if (account == null) {
-                    TempData["RegisterMsg"] = "Your account was not registered or could not be found. Please submit "
+                    string msg = "Your account was not registered or could not be found. Please submit "
                     + "for registration again.";
-                    TempData["Css"] = "alert-danger";
+                    Flash( msg, "danger");
                 }
                 else {
                     if (account.verified == false) {
@@ -66,32 +66,31 @@ namespace stacsnet.Controllers
                         acontext.Accounts.Update(account);
                         acontext.SaveChanges();
                     }
-                    TempData["RegisterMsg"] = "The account " + account.email + "@st-andrews.ac.uk " + "(" 
+                
+                    string msg = "The account " + account.email + "@st-andrews.ac.uk " + "(" 
                     + account.uname + ") " + "has been succesfuly registered and confirmed. Please save your password, "
                     + "you are authenticated to access all features of stacsnet";
-                    TempData["Css"] = "alert-success";
+                    Flash( msg, "success");
                 }
             }         
             return RedirectToAction("Index", "Home");
         }
 
+        private IActionResult Error(int status, string error_msg ) =>
+            RedirectToRoute( "Error", new { status = status, error_msg = error_msg } );
 
-        public IActionResult Error()
-        {
-            ViewBag.Title = "Error";
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        private void Flash( string error_msg, string css ) {
+            TempData[ "Flash" ] = error_msg;
+            TempData[ "FlashCss" ] = css;
         }
-
-
-
-        [NonAction]
+        
         private void Send(string email, string uname, string key) {
 
             var fromAddress = new MailAddress("stacsnet@gmail.com", "Stacsnet Admin");
             var toAddress = new MailAddress(email + "@st-andrews.ac.uk", uname);
             const string fromPassword = "staccy365";
             const string subject = "Verify your stacsnet account";
-            string href = Static.url + "/Register/" + key;
+            string href = Static.URL + "/Register/" + key;
             string body = System.IO.File.ReadAllText("Views/Shared/_Email.html")
                                     .Replace("{{uname}}",uname)
                                     .Replace("{{href}}", href);

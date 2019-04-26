@@ -1,27 +1,23 @@
 <div class="row container">
-    <div class='col-sm-8'>
+    <div class='col-sm-4 no-padding'>
         <h1 class="text-uppercase">Stacsnet</h1>
         <h3> @ViewBag.Subtitle </h3>
         <h4> @ViewBag.Subtext </h4>
         <button id='btn-modal' class="btn btn-primary"> Submit your grades </button>
-        @if (TempData.ContainsKey("Msg")) {
-            <h5 class='@TempData["Css"]' role='alert'>
-                @TempData["Msg"]
-            </h5>
-        }
     </div>
-    <div class='col-sm-4'>
-            <div class='header-box'>
-                    <h4>Select your module and year </h4>
-                    <select id='select-module' style='min-width:100px' class='form-control'>
-                        
-                    </select>
-                    <select id='select-year' style='min-width:120px' class='form-control'>
+    <div class='col-sm-8 no-padding'>
+         @{ await Html.RenderPartialAsync("_Flash"); }
+         <div class='header-box'>
+            <h4>Select your module and year </h4>
+            <select id='select-module' style='min-width:100px' class='form-control'>
+                
+            </select>
+            <select id='select-year' style='min-width:120px' class='form-control'>
 
-                    </select>
-                    &nbsp;
-                    <span id='link-moduleselect'><a>Go &raquo;</a></span>
-            </div>
+            </select>
+            &nbsp;
+            <span id='link-moduleselect'><a>Go &raquo;</a></span>
+        </div>
     </div>
 </div>
 <hr>

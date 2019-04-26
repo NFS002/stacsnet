@@ -1,10 +1,25 @@
 <div class="container">
-    <h1 class="text-uppercase">Stacsnet</h1>
-    <h3> @ViewBag.Subtitle </h3>
-    @if (ViewBag.ErrMsg != null) {
-        <h3>
-            @ViewBag.ErrMsg
-        </h3>
-    }
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-uppercase">Stacsnet</h1>
+            @{
+                string status_code = TempData.ContainsKey("Status") ? TempData["Status"].ToString() : "500";
+                string error_msg = TempData.ContainsKey("ErrMsg") ? TempData["ErrMsg"].ToString() : "Something happened...";
+            }
+            <h3> @status_code </h3>
+            <h3> @error_msg   </h3>
+        </div>
+        <div class="col-md-4">
+            @if ( Context.Request.Headers.ContainsKey( "Referrer" ) ) {
+                string referrer = Context.Request.Headers[ "Referrer" ];
+                <a href="@referrer">
+                    <h3 class="btn btn-lg btn-primary">
+                        <i class="fa fa-lg fa-arrow-left"> </i>
+                        Back
+                    </h3>
+                </a>
+            }
+        </div>
+    </div>
 </div>
 <hr>
