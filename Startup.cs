@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using stacsnet.Util;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace stacsnet
 {
@@ -41,6 +42,11 @@ namespace stacsnet
         {
             Static.init( Configuration, env );
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseStatusCodePagesWithReExecute("/Error","?status={0}");
 
             if (env.IsDevelopment())
@@ -53,7 +59,7 @@ namespace stacsnet
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
         
