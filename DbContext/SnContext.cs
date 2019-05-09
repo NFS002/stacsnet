@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using stacsnet.Models;
+using stacsnet.Util;
 using System;
 
 namespace stacsnet
@@ -19,7 +20,7 @@ namespace stacsnet
         }*/
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlite(@"Data Source=./Db/db.sqlite");
+            optionsBuilder.UseSqlite(@"Data Source="  + Static.DB_PATH );
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {

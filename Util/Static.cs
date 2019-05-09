@@ -10,9 +10,15 @@ using stacsnet.Models;
 
 namespace stacsnet.Util {
     public static class Static {
+
         public static IHostingEnvironment ENV { get; set; }
+
         public static string URL { get; set; }
+
         public static string MOUNT { get; set; }
+
+        public static string DB_PATH { get; set; }
+
         public static QAPost FIRST_POST { 
             get {
                 return new QAPost {
@@ -61,21 +67,36 @@ namespace stacsnet.Util {
 
             MOUNT = configuration.GetSection( "MOUNT" ).Value;
 
+            DB_PATH = Path.Join( configuration.GetSection( "DB_PATH" ).Value, "db.sqlite");
+
             TYPES = configuration.GetSection( "TYPES" ).Get<string[]>().ToList();
+
+            mkDirs();
+
+            loadDb( );
 
             _YEARS = YEARS = configuration.GetSection( "YEARS" ).Get<string[]>().ToList();
 
             _MODULES = configuration.GetSection( "MODULES" ).Get<string[]>().ToList();
 
-            mkDirs();
 
-            loadDb( );
-            
+            DirectoryInfo parentDir = new DirectoryInfo ( MOUNT );
+            foreach( string year in YEARS) {
+                DirectoryInfo subdir =  parentDir.CreateSubdirectory( year );
+                foreach( string module in MODULES) {
+                    DirectoryInfo subsubdir = subdir.CreateSubdirectory( module );
+                    foreach( string type in TYPES ) {
+                        DirectoryInfo subsubsubdir = subsubdir.CreateSubdirectory( type );
+                    }
+                }
+            }
 
         }
         private static void loadDb( ) {
-            var context = new SnContext ();
-            context.Database.EnsureCreated();
+            using (var context = new SnContext ()) {
+                context.Database.EnsureCreated();
+            }
+        
         }
         
 
@@ -117,32 +138,22 @@ namespace stacsnet.Util {
 
             _YEARS = _YEARS.Distinct().ToList();
 
+
         }
 
         private static void mkDirs() {
+            
+            string dirname = Path.GetDirectoryName( DB_PATH );
+
+            DirectoryInfo dir = new DirectoryInfo( dirname );
+
+            dir.Create();
+    
+            File.Create( DB_PATH );
 
         
-            DirectoryInfo dir = new DirectoryInfo( MOUNT );
+            dir = new DirectoryInfo( MOUNT );
             dir.Create();
-
-            foreach( string year in YEARS) {
-                DirectoryInfo subdir =  dir.CreateSubdirectory( year );
-                foreach( string module in MODULES) {
-                    DirectoryInfo subsubdir = subdir.CreateSubdirectory( module );
-                    foreach( string type in TYPES ) {
-                        DirectoryInfo subsubsubdir = subsubdir.CreateSubdirectory( type );
-                    }
-                }
-            }
-
-
-
-            DirectoryInfo dbDir = new DirectoryInfo( "Db" );
-            dbDir.Create();
-            string dbPath = "Db/db.sqlite";
-
-            if ( !File.Exists( dbPath ) ) 
-                File.Create( dbPath );
         }
 
         public static bool isYear( int year ) {

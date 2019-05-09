@@ -19,8 +19,6 @@ namespace stacsnet
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
-                .UseUrls("http://*:80")
                 .UseStartup<Startup>();
     }
 }
