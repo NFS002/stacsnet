@@ -59,7 +59,6 @@ namespace stacsnet
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
         
