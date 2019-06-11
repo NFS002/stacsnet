@@ -206,6 +206,19 @@ div[data-valmsg-summary] {
     margin: 10px 0 0 0;
 }
 
+.home-button {
+    cursor:pointer;
+    color:white;
+    border-left:1px solid blue;
+    position:absolute;
+    padding: 0px 30px;
+    right:0;
+}
+.home-button:hover {
+    color:blue;
+    border-left:1px solid white;
+}
+
 .flash .btn-flash {
     float: right;
 }

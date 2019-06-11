@@ -1,8 +1,6 @@
 ﻿@model Account
-
 @{ await Html.RenderPartialAsync("_TitleSection"); }
 @section Scripts {
-    <script src="@Url.Content("~/js/home/register.js")"></script>
 	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 <div class=container>
