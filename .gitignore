@@ -7,4 +7,5 @@ DS_Store
 Resources
 db.sqlite
 pw.txt
-vps
+vps/stacsnet.pem
+vps/letsencrypt
