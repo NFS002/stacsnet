@@ -71,9 +71,11 @@ namespace stacsnet.Util {
 
             TYPES = configuration.GetSection( "TYPES" ).Get<string[]>().ToList();
 
+            var restart = configuration.GetSection("RESTART").Get<bool>();
+
             mkDirs();
 
-            loadDb( );
+            loadDb( restart );
 
             _YEARS = YEARS = configuration.GetSection( "YEARS" ).Get<string[]>().ToList();
 
@@ -92,8 +94,12 @@ namespace stacsnet.Util {
             }
 
         }
-        private static void loadDb( ) {
+        private static void loadDb( bool refresh ) {
             using (var context = new SnContext ()) {
+
+                if ( refresh ) 
+                    context.Database.EnsureDeleted();
+            
                 context.Database.EnsureCreated();
             }
         

@@ -50,7 +50,7 @@ namespace stacsnet.Models
 
 
         [DisplayName("Year: ")]
-        [RegularExpression("^[0-9]{4}_[0-9]{4}$", ErrorMessage = "Please enter the year you received this grade in the correct format (YYYY_YYYY) ")]
+        [RegularExpression("^[0-9]{4}$", ErrorMessage = "Please enter the year you received this grade. (YYYY) ")]
         public string Year { get; set; }
 
     }
